@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>Shipping update</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    p {
+      width: 100%;
+      max-width: 480px;
+      font-size: 15px;
+      line-height: 20px;
+      margin: 0 0 20px 0;
+    }
+
+    a, a:link, a:visited {
+      text-decoration: underline;
+      color: #00f;
+    }
+
+    table {
+      width: 100%;
+      max-width: 480px;
+      border-collapse: collapse;
+      font-family: "JetBrains Mono", Menlo, Consolas, "Andale Mono", "Lucida Console", "Courier New", Courier, monospace;
+      font-size: 13px;
+    }
+
+    td {
+      border-bottom: 1px dashed #000;
+    }
+
+    td.description {
+      vertical-align: top;
+      text-align: left;
+    }
+
+    td.price {
+      vertical-align: top;
+      text-align: right;
+    }
+
+    td.subtotal {
+      vertical-align: bottom;
+    }
+
+    span.discount {
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+<h2>Order {{ order_name }}: shipping update</h2>
+
+<p>I've printed the shipping label for your order, and I'll soon drop it off at the post office. You can track it using this link:</p>
+
+<p><a href="{{ fulfillment.tracking_url }}">{{ fulfillment.tracking_url }}</a></p>
+
+{% if shipping_address.country_code != "US" %}
+<p>Something about international shipping here, maybe.</p>
+{% endif %}
+
+</body>
+</html>
+
+
+

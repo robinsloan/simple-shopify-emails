@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <title>Order confirmation</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width">
+  <style>
+    p {
+      width: 100%;
+      max-width: 480px;
+      font-size: 15px;
+      line-height: 20px;
+      margin: 0 0 20px 0;
+    }
+
+    a, a:link, a:visited {
+      text-decoration: underline;
+      color: #00f;
+    }
+
+    table {
+      width: 100%;
+      max-width: 480px;
+      border-collapse: collapse;
+      font-family: "JetBrains Mono", Menlo, Consolas, "Andale Mono", "Lucida Console", "Courier New", Courier, monospace;
+      font-size: 13px;
+    }
+
+    td {
+      border-bottom: 1px dashed #000;
+    }
+
+    td.description {
+      vertical-align: top;
+      text-align: left;
+    }
+
+    td.price {
+      vertical-align: top;
+      text-align: right;
+    }
+
+    td.subtotal {
+      vertical-align: bottom;
+    }
+
+    span.discount {
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+<h2>Order {{ order_name }}: confirmed</h2>
+
+<p>Thanks for your order!</p>
+
+<p>You&rsquo;ll receive another message with a tracking link when I prepare your order for mailing. This, right now, is your chance to double-check the shipping address below.</p>
+
+<h2>Summary</h2>
+
+<table>
+{% for line_item in subtotal_line_items %}
+<tr>
+<td class="description">
+
+{{ line_item.product.title }} &times; {{ line_item.quantity }}
+
+{% if line_item.bundle_parent? %}
+<ul>
+{% for component in line_item.bundle_components %}
+  <li><p>{{ component.product.title }}</p></li>
+{% endfor %}
+</ul>
+{% endif %}
+</td>
+
+<td class="price">
+{{ line_item.original_price | money }}
+{% if line_item.discount_allocations %}
+{% for discount_allocation in line_item.discount_allocations %}
+{% if discount_allocation.discount_application.target_selection != 'all' %}
+<br><span class="discount">{{ discount_allocation.discount_application.title }}</span> -{{ discount_allocation.amount | money }}
+{% endif %}
+{% endfor %}
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+
+<tr>
+<td class="description subtotal">Subtotal</td>
+
+<td class="price subtotal">
+
+{% if discount_applications.size > 0 %}
+{% for discount_application in discount_applications %}
+{% if discount_application.target_selection == 'all' and discount_application.target_type == 'line_item' %}
+<span class="discount">{{ discount_application.title }}</span> -{{ discount_application.total_allocated_amount | money }}<br>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{{ subtotal_price | money }}
+
+</td>
+</tr>
+
+<tr>
+<td class="description">Tax</td>
+<td class="price">
+{{ tax_price | money }}
+</td>
+</tr>
+
+<tr>
+<td class="description">Shipping</td>
+<td class="price">
+{{ shipping_price | money }}
+{% if discount_applications.size > 0 %}
+{% for discount_application in discount_applications %}
+{% if discount_application.target_type == 'shipping_line' %}
+<br><span class="discount">{{ discount_application.title }}</span> -{{ discount_application.total_allocated_amount | money }}
+{% endif %}
+{% endfor %}
+{% endif %}
+</td>
+</tr>
+
+<tr>
+<td class="description">Grand total</td>
+<td class="price">
+{{ total_price | money }}
+</td>
+</tr>
+</table>
+
+<h2>Shipping to</h2>
+
+{{ shipping_address | format_address }}
+
+<p>That&rsquo;s it!</p>
+</body>
+</html>
