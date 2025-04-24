@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <title>Shipping update</title>
+  <title>Order confirmation</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width">
   <style>
@@ -59,18 +59,23 @@
 </head>
 
 <body>
-<h2>Order {{ order_name }}: shipping update</h2>
+<h2>Order {{ order_name }}: refunded</h2>
 
-<p>I've printed the shipping label for your order, and I'll soon drop it off at the post office. You can track it using this link:</p>
+<p>I&rsquo;ve issued a refund of {{ amount | money }} for the following items:</p>
 
-<p><a href="{{ fulfillment.tracking_url }}">{{ fulfillment.tracking_url }}</a></p>
+<table>
+{% for refund_line_item in refund_line_items %}
+<tr>
+<td class="description">
+{% assign line_item = refund_line_item.line_item %}
+{{ line_item.product.title }} &times; {{ refund_line_item.quantity }}
+</td>
+</tr>
+{% endfor %}
+</table>
 
-{% if shipping_address.country_code != "US" %}
-<p>Something about international shipping here, maybe.</p>
-{% endif %}
+<p>You should see this appear on your payment card shortly.</p>
 
+<p>That&rsquo;s it!</p>
 </body>
 </html>
-
-
-

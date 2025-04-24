@@ -18,12 +18,19 @@
       color: #00f;
     }
 
+    h2 {
+      font-size: 20px;
+      line-height: 20px;
+      margin: 0 0 20px 0;
+    }
+
     table {
       width: 100%;
       max-width: 480px;
       border-collapse: collapse;
       font-family: "JetBrains Mono", Menlo, Consolas, "Andale Mono", "Lucida Console", "Courier New", Courier, monospace;
       font-size: 13px;
+      margin: 0 0 20px 0;
     }
 
     td {
@@ -139,6 +146,11 @@
 <h2>Shipping to</h2>
 
 {{ shipping_address | format_address }}
+
+{% if note %}
+<h2>Gift note</h2>
+<p><i>{{ note }}</i></p>
+{% endif %}
 
 <p>That&rsquo;s it!</p>
 </body>
